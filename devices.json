@@ -1,0 +1,49 @@
+{
+    "devices": [
+        {
+            "manufacturer": "Sartorius",
+            "vid": "24BC",
+            "pids": ["0010", "0005"]
+        },
+        {
+            "manufacturer": "FTDI (FT232/FT2232/FT4232/FT232RL)",
+            "vid": "0403",
+            "pids": ["6001", "6010", "6011"]
+        },
+        {
+            "manufacturer": "Prolific (PL2303)",
+            "vid": "067B",
+            "pids": ["2303"]
+        },
+        {
+            "manufacturer": "Prolific (PL2303HXD / PL2303GT)",
+            "vid": "067B",
+            "pids": ["2303"] 
+        },
+        {
+            "manufacturer": "Silicon Labs (CP21)",
+            "vid": "10C4",
+            "pids": ["EA60"]
+        },
+        {
+            "manufacturer": "QinHeng (CH340/CH341)",
+            "vid": "1A86",
+            "pids": ["7523"]
+        },
+        {
+            "manufacturer": "Mettler Toledo (Ariva / BC-60)",
+            "vid": "0EB8",
+            "pids": ["2200", "F000"]
+        },
+        {
+            "manufacturer": "Dymo (M10/M25/S250)",
+            "vid": "0922",
+            "pids": ["8003", "8004", "8009"]
+        },
+        {
+            "manufacturer": "Fairbanks (Ultegra)",
+            "vid": "0B67",
+            "pids": ["555E"]
+        }
+    ]
+}

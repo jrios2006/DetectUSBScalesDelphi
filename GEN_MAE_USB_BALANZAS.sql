@@ -1,0 +1,70 @@
+------------------------------------------------------------
+-- Tabla: GEN_MAE_USB_BALANZAS
+-- Descripción:
+--   Catálogo maestro de dispositivos USB tipo balanza
+--   reconocidos por la aplicación. Permite validar si
+--   un dispositivo conectado pertenece a una lista
+--   conocida de fabricantes y modelos compatibles.
+------------------------------------------------------------
+
+CREATE TABLE GEN_MAE_USB_BALANZAS(	
+  MANUFACTURER NVARCHAR2(200) NOT NULL ENABLE, 
+	VID NVARCHAR2(10) NOT NULL ENABLE, 
+	PID NVARCHAR2(10) NOT NULL ENABLE, 
+	MODELO NVARCHAR2(200), 
+	FCREACION TIMESTAMP (6) DEFAULT CURRENT_TIMESTAMP NOT NULL ENABLE, 
+	FMODIFICACION TIMESTAMP (6), 
+	FBORRADO TIMESTAMP (6), 
+	UCREACION NVARCHAR2(150) DEFAULT USER NOT NULL ENABLE, 
+	UMODIFICACION NVARCHAR2(150), 
+	UBORRADO NVARCHAR2(150), 
+	 CONSTRAINT PK_GEN_MAE_USB_BALANZAS PRIMARY KEY (VID, PID)
+);
+
+CREATE OR REPLACE EDITIONABLE TRIGGER TRG_GEN_MAE_USB_BALANZAS_AUD 
+BEFORE UPDATE ON GEN_MAE_USB_BALANZAS
+FOR EACH ROW
+BEGIN
+    :NEW.FMODIFICACION := CURRENT_TIMESTAMP;
+    IF :NEW.UMODIFICACION IS NULL THEN
+        :NEW.UMODIFICACION := USER;
+    END IF;
+END;
+
+
+COMMENT ON TABLE AHJPS_M.GEN_MAE_USB_BALANZAS IS 'Catálogo de dispositivos USB tipo balanza soportados por el sistema. Incluye fabricante, VID, PID y datos de auditoría.';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.MANUFACTURER IS 'Nombre del fabricante del dispositivo USB.';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.VID IS 'Vendor ID (Identificador del fabricante USB en formato hexadecimal).';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.PID IS 'Product ID (Identificador del producto USB en formato hexadecimal).';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.MODELO IS 'Descripción o modelo comercial del dispositivo (opcional).';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.FCREACION IS 'Fecha y hora de creación del registro.';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.FMODIFICACION IS 'Fecha y hora de la última modificación del registro.';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.FBORRADO IS 'Fecha y hora en que el registro fue marcado como eliminado (borrado lógico).';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.UCREACION IS 'Usuario que creó el registro.';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.UMODIFICACION IS 'Usuario que realizó la última modificación.';
+COMMENT ON COLUMN AHJPS_M.GEN_MAE_USB_BALANZAS.UBORRADO IS 'Usuario que marcó el registro como eliminado (borrado lógico).';
+
+
+------------------------------------------------------------
+-- Datos iniciales para GEN_MAE_USB_BALANZAS
+-- Fuente: listado JSON de dispositivos USB tipo balanza
+-- MODELO se deja como NULL hasta tener descripción comercial.
+------------------------------------------------------------
+
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Dymo','0922','8003','Dymo M10 Digital Postal Scale');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Dymo','0922','8004','Dymo M25 Digital Postal Scale');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Dymo','0922','8009','Dymo S250 Digital Postal Scale');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Mettler','0EB8','2200','Mettler Toledo Ariva Scale');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Mettler','0EB8','F000','Mettler Toledo BC60 Scale');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Sartorius','24BC','2012','Sartorius USB Serial Converter');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Sartorius','24BC','2011','Sartorius PMA USB Serial Converter');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Sartorius','24BC','0010','Sartorius');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Sartorius','24BC','0005', 'Sartorius');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('FTDI','0403','6001','FTDI (FT232/FT2232/FT4232/FT232RL)');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('FTDI','0403','6010','FTDI (FT232/FT2232/FT4232/FT232RL)');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('FTDI','0403','6011','FTDI (FT232/FT2232/FT4232/FT232RL)');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Prolific','067B','2303','Prolific (PL2303)');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Silicon Labs','10C4','EA60','Silicon Labs (CP21)');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('QinHeng','1A86','7523','QinHeng (CH340/CH341)');
+INSERT INTO GEN_MAE_USB_BALANZAS (MANUFACTURER,VID,PID,MODELO) VALUES ('Fairbanks','0B67','555E','Fairbanks (Ultegra)');
+
