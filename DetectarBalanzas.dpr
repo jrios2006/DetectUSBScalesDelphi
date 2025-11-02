@@ -1,35 +1,54 @@
-﻿program DetectarBalanzas;
+{**
+  <summary>
+    Programa de prueba para la detección de básculas USB conectadas al equipo.
+    Muestra en consola todos los dispositivos USB/COM presentes y luego identifica
+    los puertos donde hay básculas basadas en un archivo JSON de dispositivos conocidos.
+  </summary>
+
+  <remarks>
+    Flujo de funcionamiento:
+      1. Llama a <c>EnumerateAllDevices</c> para listar todos los dispositivos con VID, PID y puerto COM.
+      2. Muestra la lista completa de dispositivos en la consola.
+      3. Carga los dispositivos compatibles desde un archivo JSON usando <c>LoadDevicesFromJSON</c>.
+      4. Llama a <c>DetectScalesPorts</c> para identificar los puertos COM donde hay básculas.
+      5. Para cada puerto detectado, obtiene el tipo de báscula con <c>GetScaleTypeForPort</c>.
+      6. Muestra los resultados finales en la consola.
+  </remarks>
+
+  <example>
+    Uso típico:
+      1. Crear un archivo JSON llamado "devices.json" con la lista de dispositivos compatibles.
+      2. Ejecutar el programa.
+      3. Observar en consola la lista de todos los dispositivos y las básculas detectadas.
+  </example>
+}
+program DetectarBalanzas;
 
 {$APPTYPE CONSOLE}
 
 uses
   SysUtils,
-  Balanzas,       // Contiene TScaleDevice y TDetectedScale
-  BalanzasJSON;   // Funciones JSON que usan Balanzas.TScaleDevice
-
-/// <summary>
-/// Programa de prueba para la detección de básculas USB conectadas al equipo.
-/// Utiliza las unidades <c>Balanzas</c> y <c>BalanzasJSON</c> para:
-///   1. Cargar la lista de dispositivos conocidos desde un archivo JSON.
-///   2. Detectar los puertos COM donde hay básculas conectadas.
-///   3. Identificar el tipo de cada báscula detectada.
-///   4. Mostrar los resultados por consola.
-/// </summary>
-/// <remarks>
-/// Flujo de uso:
-///   1. Crear un archivo JSON con la lista de dispositivos compatibles (p.ej. "devices.json").
-///   2. Llamar a <c>LoadDevicesFromJSON</c> para cargar los dispositivos.
-///   3. Llamar a <c>DetectScalesPorts</c> para obtener los puertos donde están las básculas.
-///   4. Para cada puerto detectado, usar <c>GetScaleTypeForPort</c> para obtener el tipo de báscula.
-///   5. Mostrar los resultados en consola o guardarlos mediante <c>SaveScalesToJSON</c> si se desea.
-/// </remarks>
+  Balanzas,
+  BalanzasJSON,
+  Dispositivos in 'Dispositivos.pas';
 
 var
   Devices: TArray<TScaleDevice>;
   Ports: TArray<string>;
+  AllDevices: TArray<TDeviceInfo>;
+  D: TDeviceInfo;
   i: Integer;
 begin
   try
+    Writeln('--- LISTA DE DISPOSITIVOS USB/COM PRESENTES ---');
+
+    // Obtener y mostrar todos los dispositivos
+    AllDevices := EnumerateAllDevices;
+    for D in AllDevices do
+      Writeln(Format('%-40s  VID=%-4s  PID=%-4s  COM=%-6s  PC=%s',
+        [D.FriendlyName, D.VID, D.PID, D.COMPort, D.ComputerName]));
+
+    Writeln;
     Writeln('--- DETECCIÓN DE BALANZAS USB ---');
 
     // Cargar dispositivos desde JSON
@@ -38,7 +57,7 @@ begin
     // Detectar puertos de básculas
     Ports := DetectScalesPorts(Devices);
 
-    // Mostrar resultados
+    // Mostrar resultados de básculas detectadas
     if Length(Ports) = 0 then
       Writeln('No se detectaron básculas.')
     else
@@ -48,6 +67,7 @@ begin
         Writeln(Ports[i], ' - Tipo: ', GetScaleTypeForPort(Ports[i], Devices));
     end;
 
+    Writeln;
     Writeln('Finalizado. Presione ENTER para salir...');
     Readln;
 
@@ -56,4 +76,3 @@ begin
       Writeln('Error: ', E.Message);
   end;
 end.
-
