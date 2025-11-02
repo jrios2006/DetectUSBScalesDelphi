@@ -95,33 +95,68 @@ Funciones públicas:
 
 ---
 
+### 2.3 `Dispositivos.pas`
+
+**Funcionalidad:**
+
+Funciones públicas:
+
+* Lista todos los dispositivos USB/COM presentes en el equipo que tengan VID, PID y puerto COM asignado.
+* Proporciona información completa de cada dispositivo:
+
+```delphi
+TDeviceInfo = record
+  FriendlyName: string; // Nombre amigable del dispositivo
+  HardwareID: string;   // ID de hardware completo (VID, PID, REV)
+  VID: string;          // Vendor ID extraído del HardwareID
+  PID: string;          // Product ID extraído del HardwareID
+  COMPort: string;      // Puerto COM asignado
+  ComputerName: string; // Nombre del equipo
+end;
+```
+
+Funciones principal:
+
+| Función               | Descripción                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| `EnumerateAllDevices` | Devuelve un arreglo de `TDeviceInfo` con todos los dispositivos que tengan VID, PID y COMPort. |
+
+---
+
 ## Programa de prueba: DetectarBalanzas.dpr
 
 Flujo de ejecución:
 
-1. Carga dispositivos desde JSON (LoadDevicesFromJSON).
-2. Detecta los puertos COM donde hay básculas (DetectScalesPorts).
-3. Identifica el tipo de báscula en cada puerto (GetScaleTypeForPort).
+1. Lista todos los dispositivos presentes llamando a EnumerateAllDevices.
+2. Muestra los resultados en consola (nombre, VID, PID, COM, equipo).
+3. Carga dispositivos conocidos desde JSON (LoadDevicesFromJSON).
+4. Detecta los puertos COM donde hay básculas (DetectScalesPorts).
+5. Identifica el tipo de báscula para cada puerto (GetScaleTypeForPort).
+6. Muestra los resultados finales en consola.
 
-Muestra los resultados en consola.
 
 Variables principales:
 
-| Variable  | Tipo                   | Descripción                        |
-| --------- | ---------------------- | ---------------------------------- |
-| `Devices` | `TArray<TScaleDevice>` | Arreglo de dispositivos conocidos. |
-| `Ports`   | `TArray<string>`       | Arreglo de puertos COM detectados. |
-| `i`       | Integer                | Iterador para recorrer `Ports`.    |
+| Variable     | Tipo                   | Descripción                                      |
+| ------------ | ---------------------- | ------------------------------------------------ |
+| `AllDevices` | `TArray<TDeviceInfo>`  | Lista completa de dispositivos presentes.        |
+| `Devices`    | `TArray<TScaleDevice>` | Lista de dispositivos conocidos del JSON.        |
+| `Ports`      | `TArray<string>`       | Arreglo de puertos COM detectados como básculas. |
+| `D`          | `TDeviceInfo`          | Registro para recorrer `AllDevices`.             |
+| `i`          | Integer                | Iterador para recorrer `Ports`.                  |
+
 
 ### Ejemplo de salida
 
 ```bash
+--- LISTA DE DISPOSITIVOS USB/COM PRESENTES ---
+Dispositivo serie USB (COM5)              VID=24BC  PID=0010  COM=COM5    PC=DESJRA01
+
 --- DETECCIÓN DE BALANZAS USB ---
 Básculas detectadas:
-COM5 - Tipo: Sartorius
-COM7 - Tipo: FTDI (FT232/FT2232/FT4232/FT232RL)
+Dispositivo serie USB (COM5) - Tipo: Sartorius
+
 Finalizado. Presione ENTER para salir...
 ```
-
 
 ---
