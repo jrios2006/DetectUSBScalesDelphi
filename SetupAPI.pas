@@ -12,8 +12,12 @@ const
   DIGCF_PROFILE         = $00000008;
   DIGCF_DEVICEINTERFACE = $00000010;
 
-  SPDRP_HARDWAREID      = $00000001;  // agregado
+  SPDRP_HARDWAREID      = $00000001;
   SPDRP_FRIENDLYNAME    = $0000000C;
+
+  DICS_FLAG_GLOBAL      = $00000001;
+  DIREG_DEV             = $00000001;
+  KEY_READ              = $20019;
 
 type
   HDEVINFO = Pointer;
@@ -33,6 +37,8 @@ function SetupDiGetDeviceInstanceId(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSP
 function SetupDiGetDeviceRegistryProperty(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSP_DEVINFO_DATA;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+function SetupDiOpenDevRegKey(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSP_DEVINFO_DATA;
+  Scope, HwProfile, KeyType, samDesired: DWORD): HKEY; stdcall;
 function SetupDiDestroyDeviceInfoList(DeviceInfoSet: HDEVINFO): BOOL; stdcall;
 
 implementation
@@ -41,7 +47,7 @@ function SetupDiGetClassDevs; external 'setupapi.dll' name 'SetupDiGetClassDevsA
 function SetupDiEnumDeviceInfo; external 'setupapi.dll' name 'SetupDiEnumDeviceInfo';
 function SetupDiGetDeviceInstanceId; external 'setupapi.dll' name 'SetupDiGetDeviceInstanceIdA';
 function SetupDiGetDeviceRegistryProperty; external 'setupapi.dll' name 'SetupDiGetDeviceRegistryPropertyA';
+function SetupDiOpenDevRegKey; external 'setupapi.dll' name 'SetupDiOpenDevRegKey';
 function SetupDiDestroyDeviceInfoList; external 'setupapi.dll' name 'SetupDiDestroyDeviceInfoList';
 
 end.
-
